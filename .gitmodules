@@ -1,0 +1,3 @@
+[submodule "definitions"]
+	path = definitions
+	url = git@bitbucket.org:lcapra-cn/compose-so-definitions.git

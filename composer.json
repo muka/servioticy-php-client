@@ -1,0 +1,26 @@
+{
+    "name": "muka/compose-php-client",
+    "description": "Client library for COMPOSE platform.",
+    "homepage": "https://github.com/muka/compose-php-client",
+    "keywords": ["iot", "compose"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Luca Capra",
+            "email": "luca.capra@create-net.org"
+        }
+    ],
+    "require": {
+        "php": ">= 5.3",
+        "educoder/pest": "1.0.0",
+        "phpcollection/phpcollection": "0.2.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "muka\\Compose" : "src/"
+        },
+        "psr-4": {
+            "muka\\" : "src/muka/"
+        }
+    }
+}
