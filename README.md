@@ -1,4 +1,4 @@
-Compose PHP client
+PHP client for servioticy
 ===
 
 This library allow to easily communicate with the COMPOSE platform. 
