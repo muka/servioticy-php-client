@@ -101,10 +101,10 @@ class WebObject implements IComposeObject
                             $this->addStream($objKey, (array)$objValue);
                             break;
                         case "actions":
-                            $this->addAction($objKey, (array)$objValue);
+                            $this->addAction((array)$objValue);
                             break;
                         case "subscriptions":
-                            $this->addSubscription($objKey, (array)$objValue);
+                            $this->addSubscription((array)$objValue);
                             break;
                     }
                 }
@@ -148,10 +148,9 @@ class WebObject implements IComposeObject
     }
 
     public function addAction($key, $value = []) {
-//        $value = new Action($value);
-//        $this->actions->set($key, $value);
-//        return $value;
-        throw new Exception("Not implmented yet");
+        $value = new ServiceObject\Action($value, $this);
+        $this->actions->set($value->getName(), $value);
+        return $value;
     }
 
     public function getAction($name) {
@@ -162,11 +161,10 @@ class WebObject implements IComposeObject
         return $this->actions;
     }
 
-    public function addSubscription($key, $value = []) {
-//        $value = new Subscription($value);
-//        $this->actions->set($key, $value);
-//        return $value;
-        throw new Exception("Not implmented yet");
+    public function addSubscription($value = []) {
+        $value = new ServiceObject\Subscription($value, $this);
+        $this->actions->set($value->getName(), $value);
+        return $value;
     }
 
     public function getSubscription($name) {

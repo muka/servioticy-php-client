@@ -12,8 +12,8 @@ class Client
     protected $http;
     protected $headers;
 
-    public static $baseUrl;
-    public static $apiKey;
+    protected $baseUrl;
+    protected $apiKey;
 
     private $__lastResponse = null;
 
@@ -96,11 +96,11 @@ class Client
 
         if(!$this->headers) {
 
-            if(!self::$apiKey) {
+            if(!$this->apiKey) {
                 $this->error("Client::apiKey needs to be set before making requests");
             }
 
-            $this->headers['Authorization'] = self::$apiKey;
+            $this->headers['Authorization'] = $this->apiKey;
         }
 
         return array_merge($this->headers, $headers);
@@ -110,11 +110,11 @@ class Client
         if(is_null($this->http)) {
 
             // basic validation
-            if(!self::$baseUrl) {
+            if(!$this->baseUrl) {
                 $this->error("Client::baseUrl needs to be set before making requests");
             }
 
-            $this->http = new \PestJSON(self::$baseUrl);
+            $this->http = new \PestJSON($this->baseUrl);
         }
 
         return $this->http;
@@ -128,10 +128,10 @@ class Client
         return $this->__lastResponse;
     }
 
-    public static function setBaseUrl($baseUrl) {
-        self::$baseUrl = $baseUrl;
+    public function setBaseUrl($baseUrl) {
+        $this->baseUrl = $baseUrl;
     }
-    public static function setApiKey($apiKey) {
-        self::$apiKey = $apiKey;
+    public function setApiKey($apiKey) {
+        $this->apiKey = $apiKey;
     }
 }

@@ -17,7 +17,7 @@ class ServiceObject extends WebObject
 
     function __construct($obj = null) {
         parent::__construct($obj);
-        $this->__client = new Api\Client($this);
+        $this->__client = new Client($this);
     }
 
     /**
@@ -120,12 +120,12 @@ class ServiceObject extends WebObject
         return $this->__client;
     }
 
-    public static function setApiKey($k) {
-        Client::setApiKey($k);
+    public function setApiKey($k) {
+        $this->getClient()->setApiKey($k);
     }
 
-    public static function setBaseUrl($u) {
-        Client::setBaseUrl($u);
+    public function setBaseUrl($u) {
+        $this->getClient()->setBaseUrl($u);
     }
 
 }
