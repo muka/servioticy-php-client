@@ -13,7 +13,7 @@
     "require": {
         "php": ">= 5.3",
         "educoder/pest": "1.0.0",
-        "phpcollection/phpcollection": "0.2.*"
+        "phpcollection/phpcollection": "0.4.*"
     },
     "autoload": {
         "psr-0": {
