@@ -200,9 +200,15 @@ class WebObject implements IComposeObject
             $object->streams[$name] = $stream->toJson();
         }
 
+        $object->actions = [];
+        foreach($this->actions as $name => $action) {
+            $object->actions[$name] = $action->toJson();
+        }
+
         $object->customFields = $this->customFields;
         $object->properties = $this->properties;
 
+//        print_r(json_encode($object)); die();
         return $asText ? json_encode($object) : $object;
     }
 
