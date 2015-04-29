@@ -12,6 +12,7 @@ use PhpCollection\Map;
 class WebObject implements IComposeObject
 {
 
+    private $handledProperties = ['streams', 'actions', 'subscriptions'];
     private $fields = [];
 
     protected $streams;
@@ -52,35 +53,32 @@ class WebObject implements IComposeObject
             return $json;
         };
 
-        if(!is_object($source) && !is_array($source)) {
+        if(is_object($source) || is_array($source)) {
+            return $this->loader($source);
+        }
 
-            // Check if it is available in the local repository
+        // Check if it is available in the local repository
+        $filename = realpath(self::$localRepositoryPath) ."/{$source}.json";
 
-            $filename = realpath(self::$localRepositoryPath) ."/{$source}.json";
+        if(file_exists($filename)) {
+            $source = $filename;
+        }
 
-            if(file_exists($filename)) {
-                $source = $filename;
-            }
+        // parse from file or url
+        if(file_exists($source) || @parse_url($source)) {
 
-            // parse from file or url
-            if(file_exists($source) || @parse_url($source)) {
-
-                // Silent warnings, evaluate the return value only
-                $content = @file_get_contents($source);
-                if($content !== false) {
-                    $json = $parseJson($content);
-                }
-                else {
-                    throw new Exception\ParserException(sprintf("Unable to read JSON from %s", $source));
-                }
+            // Silent warnings, evaluate the return value only
+            $content = @file_get_contents($source);
+            if($content !== false) {
+                $json = $parseJson($content);
             }
             else {
-                // parse as JSON string
-                $json = $parseJson($json);
+                throw new Exception\ParserException(sprintf("Unable to read JSON from %s", $source));
             }
         }
         else {
-            $json = $source;
+            // parse as JSON string
+            $json = $parseJson($json);
         }
 
         return $this->loader($json);
@@ -88,30 +86,35 @@ class WebObject implements IComposeObject
 
     protected function loader($json) {
 
-        $handledProperties = array('streams', 'actions', 'subscriptions');
+        $handledProperties = $this->handledProperties;
 
         foreach($json as $key => $value) {
+
             if(!in_array($key, $handledProperties)) {
-                $this->{$key} = $value;
+                $this->fields[$key] = $value;
+                continue;
             }
-            else {
-                foreach ($value as $objKey => $objValue) {
-                    switch($key) {
-                        case "streams":
-                            $this->addStream($objKey, (array)$objValue);
-                            break;
-                        case "actions":
-                            $this->addAction((array)$objValue);
-                            break;
-                        case "subscriptions":
-                            $this->addSubscription((array)$objValue);
-                            break;
-                    }
+
+            foreach ($value as $objKey => $objValue) {
+                switch($key) {
+                    case "streams":
+                        $this->addStream($objKey, (array)$objValue);
+                        break;
+                    case "actions":
+                        $this->addAction((array)$objValue);
+                        break;
+                    case "subscriptions":
+                        $this->addSubscription((array)$objValue);
+                        break;
                 }
             }
         }
 
         return $this;
+    }
+
+    protected function getFields() {
+        return $this->fields;
     }
 
     public function __set($name, $value) {
@@ -161,7 +164,7 @@ class WebObject implements IComposeObject
         return $this->actions;
     }
 
-    public function addSubscription($value = []) {
+    public function addSubscription(array $value = []) {
         $value = new ServiceObject\Subscription($value, $this);
         $this->actions->set($value->getName(), $value);
         return $value;
@@ -189,26 +192,29 @@ class WebObject implements IComposeObject
 
     public function toJson($asText = false) {
 
-        $object = new \stdClass();
+        $object = [];
 
-        foreach($this->fields as $key => $value){
-            $object->{$key} = $value;
+        foreach($this->getFields() as $key => $value){
+            if($key == 'data') {
+                continue;
+            }
+            $object[ $key ] = $value;
         }
 
-        $object->streams = [];
-        foreach($this->streams as $name => $stream) {
-            $object->streams[$name] = $stream->toJson();
+        $object['customFields'] = $this->customFields;
+        $object['properties'] = $this->properties;
+
+        $handledProperties = $this->handledProperties;
+
+        foreach ($handledProperties as $key) {
+
+            $object[ $key ] = [];
+
+            foreach($this->{$key} as $name => $elem) {
+                $object[ $key ][ $name ] = $elem->toJson();
+            }
+
         }
-
-        $object->actions = [];
-        foreach($this->actions as $name => $action) {
-            $object->actions[$name] = $action->toJson();
-        }
-
-        $object->customFields = $this->customFields;
-        $object->properties = $this->properties;
-
-//        print_r(json_encode($object)); die();
         return $asText ? json_encode($object) : $object;
     }
 
