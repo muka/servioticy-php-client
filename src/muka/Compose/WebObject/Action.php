@@ -5,7 +5,7 @@ namespace muka\Compose\WebObject;
 /**
  * @author l
  */
-class Action
+class Action implements \muka\Compose\IValidator
 {
 
     protected $so;
@@ -52,6 +52,15 @@ class Action
 
     public function getName() {
         return $this->name;
+    }
+
+    public function isValid() {
+        
+        if(!$this->getName()) {
+            return false;
+        }
+        
+        return true;
     }
 
 }

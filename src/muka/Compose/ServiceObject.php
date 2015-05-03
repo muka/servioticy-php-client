@@ -13,7 +13,7 @@ class ServiceObject extends WebObject
 {
 
     protected $__client;
-    protected $__streamClass = '\muka\Compose\ServiceObject\Stream';
+    protected $__streamClass = ServiceObject\Stream::class;
 
     function __construct($obj = null) {
         parent::__construct($obj);

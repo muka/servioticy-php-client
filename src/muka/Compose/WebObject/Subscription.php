@@ -5,7 +5,7 @@ namespace muka\Compose\WebObject;
 /**
  * @author l
  */
-class Subscription
+class Subscription implements \muka\Compose\IValidator
 {
 
     protected $so;
@@ -62,6 +62,15 @@ class Subscription
 
     public function getName() {
         return $this->name;
+    }
+
+    public function isValid() {
+        
+        if(!$this->getName() || !$this->callback) {
+            return false;
+        }
+        
+        return true;
     }
 
 }

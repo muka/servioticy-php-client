@@ -9,7 +9,7 @@ use PhpCollection\Map;
  *
  * @author l
  */
-class WebObject implements IComposeObject
+class WebObject implements IComposeObject, \JsonSerializable, \IteratorAggregate
 {
 
     private $handledProperties = ['streams', 'actions', 'subscriptions'];
@@ -20,7 +20,9 @@ class WebObject implements IComposeObject
     public $customFields;
     public $properties;
 
-    protected $__streamClass = '\muka\Compose\WebObject\Stream';
+    protected $__streamClass = WebObject\Stream::class;
+    protected $__actionClass = WebObject\Action::class;
+    protected $__subscriptionClass = WebObject\Subscription::class;
 
     // shared local repository where to find objects definitions
     public static $localRepositoryPath = './definitions';
@@ -132,7 +134,13 @@ class WebObject implements IComposeObject
      * @return WebObject\Stream The stream created
      */
     public function addStream($key, $value = []) {
+        
         $value = new $this->__streamClass($key, $value, $this);
+
+        if(!$value->isValid()) {
+            return null;
+        }
+        
         $this->streams->set($key, $value);
         return $this->getStream($key);
     }
@@ -152,6 +160,11 @@ class WebObject implements IComposeObject
 
     public function addAction($key, $value = []) {
         $value = new ServiceObject\Action($value, $this);
+
+        if(!$value->isValid()) {
+            return null;
+        }
+        
         $this->actions->set($value->getName(), $value);
         return $value;
     }
@@ -166,6 +179,11 @@ class WebObject implements IComposeObject
 
     public function addSubscription(array $value = []) {
         $value = new ServiceObject\Subscription($value, $this);
+        
+        if(!$value->isValid()) {
+            return null;
+        }
+        
         $this->actions->set($value->getName(), $value);
         return $value;
     }
@@ -216,6 +234,14 @@ class WebObject implements IComposeObject
 
         }
         return $asText ? json_encode($object) : $object;
+    }
+
+    public function jsonSerialize() {
+        return $this->toJson();
+    }
+
+    public function getIterator() {
+        return $this->toJson();
     }
 
 }
