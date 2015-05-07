@@ -230,7 +230,15 @@ class WebObject implements IComposeObject, \JsonSerializable, \IteratorAggregate
             $object[ $key ] = [];
 
             foreach($this->{$key} as $name => $elem) {
-                $object[ $key ][ $name ] = $elem->toJson();
+
+                $eljson = $elem->toJson();
+
+                if($key == 'actions') {
+                    $object[$key][] = $eljson;
+                    continue;
+                }
+
+                $object[ $key ][ $name ] = $eljson;
             }
 
         }

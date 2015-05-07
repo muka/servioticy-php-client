@@ -71,24 +71,6 @@ class Stream extends \muka\Compose\WebObject\Stream
         return $this;
     }
 
-//    public function index() {
-//        if(!$this->so->hasId()) {
-//            $this->error("Service Object id not set");
-//        }
-//
-//        $response = $this->getClient()->get(["/%s/streams", $this->so->id]);
-//        var_dump($response);die();
-//
-//        if(isset($response['streams'])) {
-//            $this->so->streams->clear();
-//            foreach($response['streams'] as $name => $data) {
-//                $this->so->addStream($name, $data);
-//            }
-//        }
-//
-//        return $this;
-//    }
-
     /**
      * Return the http API client
      *

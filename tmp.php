@@ -14,8 +14,8 @@ $obj = <<<EQ
       "blue"
     ]
   },
-  "streams": {
-    "location": {
+  "streams": [
+    {
       "description": "GPS location",
       "type": "sensor",
       "name": "location",
@@ -37,7 +37,7 @@ $obj = <<<EQ
         }
       }
     }
-  },
+  ],
   "actions": [
     {
       "name": "turn-right"
