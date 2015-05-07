@@ -67,7 +67,7 @@ class WebObject implements IComposeObject, \JsonSerializable, \IteratorAggregate
         }
 
         // parse from file or url
-        if(file_exists($source) || @parse_url($source)) {
+        if(file_exists($source) || substr($source, 0, 4) == 'http') {
 
             // Silent warnings, evaluate the return value only
             $content = @file_get_contents($source);
@@ -80,7 +80,7 @@ class WebObject implements IComposeObject, \JsonSerializable, \IteratorAggregate
         }
         else {
             // parse as JSON string
-            $json = $parseJson($json);
+            $json = $parseJson($source);
         }
 
         return $this->loader($json);
@@ -134,13 +134,13 @@ class WebObject implements IComposeObject, \JsonSerializable, \IteratorAggregate
      * @return WebObject\Stream The stream created
      */
     public function addStream($key, $value = []) {
-        
+
         $value = new $this->__streamClass($key, $value, $this);
 
         if(!$value->isValid()) {
             return null;
         }
-        
+
         $this->streams->set($key, $value);
         return $this->getStream($key);
     }
@@ -158,13 +158,14 @@ class WebObject implements IComposeObject, \JsonSerializable, \IteratorAggregate
         return $this->streams;
     }
 
-    public function addAction($key, $value = []) {
+    public function addAction($value = []) {
+
         $value = new ServiceObject\Action($value, $this);
 
         if(!$value->isValid()) {
             return null;
         }
-        
+
         $this->actions->set($value->getName(), $value);
         return $value;
     }
@@ -179,11 +180,11 @@ class WebObject implements IComposeObject, \JsonSerializable, \IteratorAggregate
 
     public function addSubscription(array $value = []) {
         $value = new ServiceObject\Subscription($value, $this);
-        
+
         if(!$value->isValid()) {
             return null;
         }
-        
+
         $this->actions->set($value->getName(), $value);
         return $value;
     }

@@ -9,7 +9,7 @@ namespace muka\Compose\WebObject;
  */
 class Stream implements \muka\Compose\IValidator
 {
-    
+
     protected $channelTypes = ['number', 'string', 'boolean', 'geo_point'];
 
 
@@ -178,31 +178,31 @@ class Stream implements \muka\Compose\IValidator
     }
 
     public function isValid() {
-        
+
         if(!$this->getName()) {
             return false;
         }
-        
+
         if(!$this->getChannels()) {
             return false;
         }
-        
+
         foreach ($this->getChannels() as $channel) {
-            
-            if(!isset($channel['type']) || !isset($channel['unit'])) {
+
+            if(!isset($channel->type) || !isset($channel->unit)) {
                 return false;
             }
-            
-            if(!$channel['type'] || !$channel['unit']) {
+
+            if(!$channel->type || !$channel->unit) {
                 return false;
             }
-            
-            if(!in_array($channel['type'], $this->channelTypes)) {
+
+            if(!in_array($channel->type, $this->channelTypes)) {
                 return false;
             }
-            
+
         }
-        
+
         return true;
     }
 
