@@ -9,6 +9,8 @@ namespace muka\Compose\Api;
  */
 class Client
 {
+
+    protected $resetHttp = false;
     protected $http;
     protected $headers;
 
@@ -108,10 +110,11 @@ class Client
         return array_merge($this->headers, $headers);
     }
 
-    protected function http($reset = false) {
+    protected function http() {
 
-        if($reset === true) {
+        if($this->resetHttp == true) {
             $this->http = null;
+            $this->resetHttp = false;
         }
 
         if(is_null($this->http)) {
@@ -152,6 +155,6 @@ class Client
 
     public function setOptions(array $options) {
         $this->options = $options;
-        $this->http(true);
+        $this->resetHttp = true;
     }
 }
