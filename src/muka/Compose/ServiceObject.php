@@ -114,7 +114,7 @@ class ServiceObject extends WebObject
     /**
      * Return the http API client
      *
-     * @return muka\Compose\Api\Client the http API client
+     * @return \muka\Compose\Api\Client
      */
     public function getClient() {
         return $this->__client;

@@ -127,9 +127,12 @@ class Client
             $this->http = new \PestJSON($this->baseUrl);
 
             if($this->options) {
-                if(key_exists("curl", $this->options)) {
-                    $this->http->curl_opts = array_merge($this->http->curl_opts, $this->options['curl']);
+
+                if(key_exists("unsafe_ssl", $this->options) && $this->options['unsafe_ssl']) {
+                    $this->http->curl_opts[CURLOPT_SSL_VERIFYPEER] = false;
+                    $this->http->curl_opts[CURLOPT_SSL_VERIFYHOST] = false;
                 }
+
             }
 
         }
