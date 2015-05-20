@@ -15,6 +15,8 @@ class Client
     protected $baseUrl;
     protected $apiKey;
 
+    protected $options;
+
     private $__lastResponse = null;
 
     function __construct() {}
@@ -106,7 +108,12 @@ class Client
         return array_merge($this->headers, $headers);
     }
 
-    protected function http() {
+    protected function http($reset = false) {
+
+        if($reset === true) {
+            $this->http = null;
+        }
+
         if(is_null($this->http)) {
 
             // basic validation
@@ -115,6 +122,13 @@ class Client
             }
 
             $this->http = new \PestJSON($this->baseUrl);
+
+            if($this->options) {
+                if(key_exists("curl", $this->options)) {
+                    $this->http->curl_opts = array_merge($this->http->curl_opts, $this->options['curl']);
+                }
+            }
+
         }
 
         return $this->http;
@@ -131,7 +145,13 @@ class Client
     public function setBaseUrl($baseUrl) {
         $this->baseUrl = $baseUrl;
     }
+
     public function setApiKey($apiKey) {
         $this->apiKey = $apiKey;
+    }
+
+    public function setOptions(array $options) {
+        $this->options = $options;
+        $this->http(true);
     }
 }
