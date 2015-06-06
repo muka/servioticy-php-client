@@ -199,7 +199,7 @@ class Stream implements \muka\Compose\IValidator
                 return false;
             }
 
-            if(!in_array($channel['type'], $this->channelTypes)) {
+            if(!in_array(strtolower($channel['type']), $this->channelTypes)) {
                 return false;
             }
 
