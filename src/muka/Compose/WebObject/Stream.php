@@ -178,7 +178,7 @@ class Stream implements \muka\Compose\IValidator
     }
 
     public function isValid() {
-
+/*
         if(!$this->getName()) {
             return false;
         }
@@ -204,7 +204,7 @@ class Stream implements \muka\Compose\IValidator
             }
 
         }
-
+*/
         return true;
     }
 
